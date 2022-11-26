@@ -12,22 +12,21 @@ This plugins requires `telescope.nvim` and `plenary`
 
 using packer
 
-```
+```lua
 use("desdic/telescope-rooter.nvim")
 ```
 
 ## Enabling in telescope
 
-```
+```lua
 require "telescope".load_extension("rooter")
 ```
 
 ## Default configuration
 
-```
-extensions = {
-  ...
-    rooter = { 
+```lua
+require("telescope").extensions = {
+    rooter = {
        enable = true,
        patterns = { ".git" },
        debug = false
