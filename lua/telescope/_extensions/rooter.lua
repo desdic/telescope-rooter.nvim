@@ -1,20 +1,13 @@
 local has_telescope, telescope = pcall(require, "telescope")
 if not has_telescope then
-	error("This extension requires telescope.nvim")
+	vim.notify("This extension requires telescope.nvim", vim.log.levels.ERROR, { title = "Plugin error" })
 	return
 end
-
-local has_plenary, plenary = pcall(require, "plenary")
-if not has_plenary then
-	error("This extension requires plenary")
-	return
-end
-
-local log = plenary.log.new({ plugin = "telescope_rooter", level = "info" })
 
 local toggle = function(_)
 	vim.g["Telescope#rooter#enabled"] = not vim.g["Telescope#rooter#enabled"]
-	print("Telescope#rooter#enabled=" .. vim.inspect(vim.g["Telescope#rooter#enabled"]))
+	local state = vim.g["Telescope#rooter#enabled"] and "enabled" or "disabled"
+	vim.notify("Telescope#rooter " .. state)
 end
 
 local setup = function(ext_config, _)
@@ -22,11 +15,6 @@ local setup = function(ext_config, _)
 
 	-- default enabled
 	vim.g["Telescope#rooter#enabled"] = vim.F.if_nil(config.enable, true)
-
-	-- redefine log if debug enabled
-	if vim.F.if_nil(config.debug, false) then
-		log = plenary.log.new({ plugin = "telescope_rooter", level = "debug" })
-	end
 
 	local group = vim.api.nvim_create_augroup("TelescopeRooter", { clear = true })
 
@@ -38,7 +26,6 @@ local setup = function(ext_config, _)
 
 			if vim.g["Telescope#rooter#oldpwd"] == nil then
 				vim.g["Telescope#rooter#oldpwd"] = vim.uv.cwd()
-				log.debug("before " .. vim.inspect(vim.uv.cwd()))
 			end
 		end,
 		group = group,
@@ -55,7 +42,6 @@ local setup = function(ext_config, _)
 					local rootdir = vim.fs.dirname(vim.fs.find(config.patterns, { upward = true })[1])
 					if rootdir ~= nil then
 						vim.api.nvim_set_current_dir(rootdir)
-						log.debug("changing dir to " .. rootdir)
 					end
 				end
 			end)
@@ -72,7 +58,6 @@ local setup = function(ext_config, _)
 			vim.schedule(function()
 				if vim.bo.filetype ~= "TelescopePrompt" then
 					if vim.g["Telescope#rooter#oldpwd"] ~= nil then
-						log.debug("restoring " .. vim.g["Telescope#rooter#oldpwd"])
 						vim.api.nvim_set_current_dir(vim.g["Telescope#rooter#oldpwd"])
 						vim.g["Telescope#rooter#oldpwd"] = nil
 					end

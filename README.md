@@ -6,14 +6,19 @@
 
 ## Requirements
 
-This plugins requires `telescope.nvim` and `plenary`
+This plugins requires `telescope.nvim`
 
 ## Installation
 
-using packer
+Using Lazy as dependency for telescope
 
 ```lua
-use("desdic/telescope-rooter.nvim")
+
+dependencies = {
+	...
+	{"desdic/telescope-rooter.nvim"}
+	...
+}
 ```
 
 ## Enabling in telescope
@@ -28,8 +33,7 @@ require "telescope".load_extension("rooter")
 require("telescope").extensions = {
     rooter = {
        enable = true,
-       patterns = { ".git" },
-       debug = false
+       patterns = { ".git" }
     }
 }
 ```
